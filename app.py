@@ -17,23 +17,36 @@ st.title('Mosaic Image Processing App')
 uploaded_file = st.file_uploader("Choose an image...", type="jpg")
 if uploaded_file is not None:
     image = Image.open(uploaded_file)
-    st.image(image, caption='Uploaded Image', use_column_width=True)
+    
     buffered = io.BytesIO()
     image.save(buffered, format="JPEG")
     img_str = base64.b64encode(buffered.getvalue()).decode("utf-8")
+    
     if st.button('Process Image'):
         try:
             prediction_output = predict_image(img_str)
             output_base64 = prediction_output
             output_image_data = base64.b64decode(output_base64)
             result_image = Image.open(io.BytesIO(output_image_data))
-            st.image(result_image, caption='Processed Image', use_column_width=True)
+            
+            # Resize the result image to match the dimensions of the input image
+            result_image = result_image.resize(image.size)
+            
+            col1, col2 = st.columns(2)
+            
+            with col1:
+                st.image(image, caption='Uploaded Image', use_column_width=True)
+            
+            with col2:
+                st.image(result_image, caption='Processed Image', use_column_width=True)
+                
         except UnauthorizedException as e:
             st.error("Unauthorized exception: " + str(e))
         except NotFoundException as e:
             st.error("Not found exception: " + str(e))
         except Exception as e:
             st.error("Exception when calling model->predict: %s\n" % e)
+
 # Add some styling with Streamlit's Markdown
 st.markdown("""
     <style>
@@ -72,6 +85,14 @@ st.markdown("""
         .stImage > img {
             border: 2px solid #4CAF50;
             border-radius: 8px;
+        }
+        pre {
+            background: #e0f7fa;
+            padding: 15px;
+            border-radius: 8px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            border: 1px solid #4CAF50;
         }
         .css-1cpxqw2.e1ewe7hr3 {
             background-color: #ffffff;
