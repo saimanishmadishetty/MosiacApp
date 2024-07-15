@@ -12,8 +12,66 @@ def predict_image(input_data):
     response = vps_model_client.predict(model_id=model_id, input_data=input_data)
     return response
 
-st.title('Mosaic Image Processing App')
+# Set the title and description with new font style
+st.markdown("""
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+        html, body, [class*="css"] {
+            font-family: 'Roboto', sans-serif;
+        }
+        .title {
+            font-size: 2.5rem;
+            color: #4CAF50;
+            text-align: center;
+        }
+        .description {
+            font-size: 1.25rem;
+            color: #555;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .uploaded-image {
+            border: 2px solid #4CAF50;
+            border-radius: 8px;
+        }
+        .prediction-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .prediction-title {
+            font-size: 24px;
+            color: #333;
+        }
+        .prediction-class {
+            font-size: 20px;
+            color: #4CAF50;
+        }
+        .confidence {
+            font-size: 20px;
+            color: #FF5733;
+        }
+        .stButton button {
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 24px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            border-radius: 8px;
+        }
+        .stButton button:hover {
+            background-color: #45a049;
+        }
+    </style>
+""", unsafe_allow_html=True)
 
+st.markdown('<div class="title">Mosaic Art Generator App</div>', unsafe_allow_html=True)
+st.markdown('<div class="description">Upload an image and let the model process it into a mosaic style. This model can transform your images into beautiful mosaics.</div>', unsafe_allow_html=True)
+
+# Upload image file
 uploaded_file = st.file_uploader("Choose an image...", type="jpg")
 if uploaded_file is not None:
     image = Image.open(uploaded_file)
@@ -22,7 +80,7 @@ if uploaded_file is not None:
     image.save(buffered, format="JPEG")
     img_str = base64.b64encode(buffered.getvalue()).decode("utf-8")
     
-    if st.button('Process Image'):
+    if st.button('Convert Image'):
         try:
             prediction_output = predict_image(img_str)
             output_base64 = prediction_output
@@ -65,26 +123,6 @@ st.markdown("""
         .stApp > main {
             margin-top: 4rem;
             padding: 2rem;
-        }
-        .stTitle, .stMarkdown, .stButton, .stImage {
-            text-align: center;
-        }
-        .stButton > button {
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px 24px;
-            font-size: 16px;
-            margin: 4px 2px;
-            cursor: pointer;
-            border: none;
-            border-radius: 8px;
-        }
-        .stButton > button:hover {
-            background-color: #45a049;
-        }
-        .stImage > img {
-            border: 2px solid #4CAF50;
-            border-radius: 8px;
         }
         pre {
             background: #e0f7fa;
