@@ -7,7 +7,7 @@ from vipas import model
 from vipas.exceptions import UnauthorizedException, NotFoundException
 
 def predict_image(input_data):
-    model_id = "mdl-cqta6o82a6n8u"
+    model_id = "mdl-ac1l5kuvbhbp3"
     vps_model_client = model.ModelClient()
     response = vps_model_client.predict(model_id=model_id, input_data=input_data)
     return response
@@ -72,12 +72,13 @@ st.markdown('<div class="title">Mosaic Art Generator App</div>', unsafe_allow_ht
 st.markdown('<div class="description">Upload an image and let the model process it into a mosaic style. This model can transform your images into beautiful mosaics.</div>', unsafe_allow_html=True)
 
 # Upload image file
-uploaded_file = st.file_uploader("Choose an image...", type="jpg")
+uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png"])
 if uploaded_file is not None:
     image = Image.open(uploaded_file)
     
     buffered = io.BytesIO()
-    image.save(buffered, format="JPEG")
+    image_format = image.format
+    image.save(buffered, format=image_format)
     img_str = base64.b64encode(buffered.getvalue()).decode("utf-8")
     
     if st.button('Convert Image'):
